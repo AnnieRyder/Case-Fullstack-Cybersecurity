@@ -1,0 +1,32 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    container_name: findings-api
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${DB_NAME}
+      DATABASE_USER: ${DB_USER}
+      DATABASE_PASSWORD: ${DB_PASSWORD}
+      EXTERNAL_API_URL: ${EXTERNAL_API_URL}
+      EXTERNAL_API_TOKEN: ${EXTERNAL_API_TOKEN}
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:16
+    container_name: postgres_appsec
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
